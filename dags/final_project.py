@@ -9,7 +9,12 @@ from helpers import SqlQueries
 
 default_args = {
     'owner': 'udacity',
-    'start_date': pendulum.now(),
+    'depends_on_past': False,
+    'start_date': datetime(2024,1,1),
+    'retries': 3,
+    'retry_delay': timedelta(minutes=5),
+    'catchup': False,
+    'email-on-retry': False
 }
 
 @dag(
