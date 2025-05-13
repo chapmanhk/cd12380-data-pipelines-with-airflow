@@ -42,7 +42,7 @@ def final_project():
         aws_credentials_id="aws_credentials",
         table="staging_songs",
         s3_bucket="udacity-dend",
-        s3_key="song-data",
+        s3_key="song-data/A/A/A",
         json_path="auto",
     )
 
@@ -87,6 +87,14 @@ def final_project():
 
     run_quality_checks = DataQualityOperator(
         task_id='Run_data_quality_checks',
+        redshift_conn_id="redshift",
+        tests=[
+            {'sql': "SELECT COUNT(*) FROM songplays"},
+            {'sql': "SELECT COUNT(*) FROM users"},
+            {'sql': "SELECT COUNT(*) FROM songs"},
+            {'sql': "SELECT COUNT(*) FROM artists"},
+            {'sql': "SELECT COUNT(*) FROM time"}
+        ]
     )
 
     start_operator >> [stage_events_to_redshift, stage_songs_to_redshift] >> load_songplays_table
@@ -95,6 +103,6 @@ def final_project():
     load_song_dimension_table,
     load_artist_dimension_table,
     load_time_dimension_table
-    ]
+    ] >> run_quality_checks
 
 final_project_dag = final_project()
